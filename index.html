@@ -726,11 +726,16 @@ function grpHTML(g) {
   var st = calcStandings(g);
   var played = g.matches.filter(function(m) { return m.s1!==null; }).length;
   var rows = st.map(function(t,i) {
-    var played = g.matches.filter(function(m){return m.s1!==null;}).length;
+    var maxOthers = st
+      .filter(function(o) { return o.name !== t.name; })
+      .map(function(o) { return o.pts + 3*(3 - o.p); });
+
+    var confirmed = (i < 2 && t.pts > Math.max.apply(null, maxOthers)) ? ' confirmed' : '';
+    var eliminated = (t.pts + 3*(3 - t.p)) < st[1].pts ? ' eliminated' : '';
+
     var qc = i===0?'q1':i===1?'q2':i===2?'q3':'';
-    var confirmed = (played >= 4 && i < 2) ? ' confirmed' : '';
-    var eliminated = (played === 6 && i === 3) ? ' eliminated' : '';
     qc = qc + confirmed + eliminated;
+
     var gd = t.gd>=0?'+'+t.gd:t.gd;
     return '<tr class="'+qc+'"><td><div class="tn"><span class="fl">'+fl(t.name)+'</span>'+sn(t.name)+'</div></td>'
       +'<td class="pts-c">'+t.pts+'</td><td class="num-c">'+t.p+'</td>'
@@ -1004,33 +1009,23 @@ function saveScores() {
   GROUPS.forEach(function(g) {
     g.matches.forEach(function(m, mi) {
       if (m.s1 === null) {
-        var id1 = 's_'+g.id+'_'+mi+'_1';
-        var id2 = 's_'+g.id+'_'+mi+'_2';
-        var inp1 = document.getElementById(id1);
-        var inp2 = document.getElementById(id2);
-        if (inp1 && inp2) {
-          var s1 = inp1.value ? parseInt(inp1.value) : null;
-          var s2 = inp2.value ? parseInt(inp2.value) : null;
-          if (s1 !== null && s2 !== null) {
-            m.s1 = s1;
-            m.s2 = s2;
-            updated++;
-          }
+        var id1 = document.getElementById('s_'+g.id+'_'+mi+'_1');
+        var id2 = document.getElementById('s_'+g.id+'_'+mi+'_2');
+        if (id1 && id2 && id1.value !== '' && id2.value !== '') {
+          m.s1 = parseInt(id1.value);
+          m.s2 = parseInt(id2.value);
+          updated++;
         }
       }
     });
   });
-  closeModal();
-  saveToStorage();
-  buildPage();
   if (updated > 0) {
-    alert(updated + ' match' + (updated!==1?'es':'') + ' updated!');
+    saveToStorage();
+    buildPage();
+    closeModal();
   }
 }
-
-window.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeModal();
-});
 </script>
+
 </body>
 </html>
