@@ -850,14 +850,30 @@ function mcHTML(m) {
   var win1=hasScore&&m.s1>m.s2, win2=hasScore&&m.s2>m.s1;
   var sc1=hasScore?'<span class="sc done">'+m.s1+'</span>':'<span class="sc">-</span>';
   var sc2=hasScore?'<span class="sc done">'+m.s2+'</span>':'<span class="sc">-</span>';
-  var proj=m.projected?'<div class="proj-tag">&#x26A1; PROJECTED</div>':'';
+  var groupsDone = areGroupsComplete();
+
+// LOCKED = teams known + groups finished
+var locked = groupsDone && m.t1 && m.t2;
+
+// PLAYED = score exists
+var played = m.s1 !== null && m.s2 !== null;
+
+var statusTag = '';
+
+if (played) {
+  statusTag = '<div class="proj-tag" style="background:#1f6feb22;color:#1f6feb">✔ PLAYED</div>';
+} else if (locked) {
+  statusTag = '<div class="proj-tag" style="background:#22c55e22;color:#22c55e">✅ LOCKED</div>';
+} else if (m.projected) {
+  statusTag = '<div class="proj-tag">⚡ PROJECTED</div>';
+}
   var ph=m.placeholder?'<div class="proj-tag" style="color:#6e7681">&#x2192; TBD</div>':'';
   var d1=t1?((!k1&&t1)?'tbd-t':''):'tbd-t';
   var d2=t2?((!k2&&t2)?'tbd-t':''):'tbd-t';
   var lbl1=t1?sn(t1):'?', lbl2=t2?sn(t2):'?';
   var s1=win1?' style="color:#22c55e;font-weight:900"':'';
   var s2=win2?' style="color:#22c55e;font-weight:900"':'';
-  return '<div class="mc'+(m.projected?' projected':'')+'">'+proj+ph
+  return '<div class="mc'+(m.projected?' projected':'')+'">'+statusTag+ph
     +'<div class="tr'+(d1?' '+d1:'')+'"'+s1+'>'+f1+lbl1+' '+sc1+'</div>'
     +'<div class="tr'+(d2?' '+d2:'')+'"'+s2+'>'+f2+lbl2+' '+sc2+'</div>'
     +'<div class="bi">'+m.info+'</div></div>';
