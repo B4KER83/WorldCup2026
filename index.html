@@ -754,7 +754,7 @@ function buildR32() {
   var t = {};
   'ABCDEFGHIJKL'.split('').forEach(id => t[id] = getTopTwo(id));
 
-  var allThirdsFull = getAllThirdsForTable();
+  var allThirdsFull = getAllThirdsSorted();
   var allThirds = allThirdsFull.slice(0, 8);
 
   var qualifyingGroups = allThirds
