@@ -750,20 +750,17 @@ var ANNEX_C={
 // Annex C column order: M74,M77,M79,M80,M81,M82,M85,M87
 var ANNEX_COLS = ['M74','M77','M79','M80','M81','M82','M85','M87'];
 
-
 function buildR32() {
   var t = {};
   'ABCDEFGHIJKL'.split('').forEach(id => t[id] = getTopTwo(id));
 
   var allThirdsFull = getAllThirdsForTable();
   var allThirds = allThirdsFull.slice(0, 8);
-  
 
-var qualifyingGroups = allThirds
-  .map(x => x.gid)
-  .sort()
-  .join('');
-
+  var qualifyingGroups = allThirds
+    .map(x => x.gid)
+    .sort()
+    .join('');
 
   var annexRow = ANNEX_C[qualifyingGroups];
 
