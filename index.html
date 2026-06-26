@@ -757,65 +757,19 @@ function buildR32() {
   var allThirdsFull = getAllThirdsForTable();
   var allThirds = allThirdsFull.slice(0, 8);
 
-  var qualifyingGroups = allThirds
-    .map(x => x.gid)
-    .sort()
-    .join('');
-  
-    var assigned = {};
-var used = {};
+  var assigned = {};
 
-// take top 8 third-place teams
-var thirds = allThirds.slice(0, 8);
+  // take top 8 third-place teams
+  var thirds = allThirds.slice(0, 8);
 
-// fixed bracket slots
-var slotOrder = ['M74','M77','M79','M80','M81','M82','M85','M87'];
+  // fixed bracket slots
+  var slotOrder = ['M74','M77','M79','M80','M81','M82','M85','M87'];
 
-// assign by ranking
-thirds.forEach((team, i) => {
-  var match = slotOrder[i];
-  assigned[match] = team.name + ' (3rd G' + team.gid + ')';
-  used[team.name] = true;
-});
-
-    var thirdSlots = [
-      {match:'M74',groups:'A/B/C/D/F'},
-      {match:'M77',groups:'C/D/F/G/H'},
-      {match:'M79',groups:'C/E/F/H/I'},
-      {match:'M80',groups:'E/H/I/J/K'},
-      {match:'M81',groups:'B/E/F/I/J'},
-      {match:'M82',groups:'A/E/H/I/J'},
-      {match:'M85',groups:'E/F/G/I/J'},
-      {match:'M87',groups:'D/E/I/J/L'}
-    ];
-
-    var used = {};
-
-    thirdSlots.forEach(slot => {
-      var eligible = slot.groups.split('/');
-
-      for (var i = 0; i < allThirds.length; i++) {
-        var team = allThirds[i];
-
-        if (
-          !used[team.name] &&
-          eligible.includes(team.gid) &&
-          allowedGroups.includes(team.gid) // ✅ KEY FIX
-        ) {
-          assigned[slot.match] = team.name + ' (3rd G' + team.gid + ')';
-          used[team.name] = true;
-          break;
-        }
-      }
-
-      if (!assigned[slot.match]) {
-  var remaining = allThirds.find(x => !used[x.name]);
-  assigned[slot.match] = remaining
-    ? remaining.name + ' (3rd G' + remaining.gid + ')'
-    : '3rd(' + slot.groups + ')';
-}
-    });
-  }
+  // assign purely by ranking
+  thirds.forEach((team, i) => {
+    assigned[slotOrder[i]] =
+      team.name + ' (3rd G' + team.gid + ')';
+  });
 
   return [
     {t1:t.A.ru, t2:t.B.ru, info:'M73'},
