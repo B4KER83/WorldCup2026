@@ -754,19 +754,14 @@ function buildR32() {
   var t = {};
   'ABCDEFGHIJKL'.split('').forEach(id => t[id] = getTopTwo(id));
 
-  var allThirdsFull = getAllThirdsForTable();
-  var allThirds = allThirdsFull.slice(0, 8);
+  var allThirds = getAllThirdsForTable().slice(0, 8);
 
   var assigned = {};
 
-  // take top 8 third-place teams
-  var thirds = allThirds.slice(0, 8);
-
-  // fixed bracket slots
   var slotOrder = ['M74','M77','M79','M80','M81','M82','M85','M87'];
 
-  // assign purely by ranking
-  thirds.forEach((team, i) => {
+  // ✅ assign strictly by ranking (1st best → last slot)
+  allThirds.forEach(function(team, i) {
     assigned[slotOrder[i]] =
       team.name + ' (3rd G' + team.gid + ')';
   });
@@ -790,7 +785,6 @@ function buildR32() {
     {t1:t.D.ru, t2:t.G.ru, info:'M88'}
   ];
 }
-
 function grpHTML(g) {
   var st=calcStandings(g);
   var played=g.matches.filter(function(m){return m.s1!==null;}).length;
