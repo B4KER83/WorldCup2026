@@ -754,17 +754,38 @@ function buildR32() {
   var t = {};
   'ABCDEFGHIJKL'.split('').forEach(id => t[id] = getTopTwo(id));
 
-  var allThirds = getAllThirdsForTable().slice(0, 8);
+  // Get top 8 third-place teams
+  var thirds = getAllThirdsForTable().slice(0, 8);
+
+  // Group letters sorted (key for Annex C)
+  var key = thirds.map(t => t.gid).sort().join('');
 
   var assigned = {};
 
-  var slotOrder = ['M74','M77','M79','M80','M81','M82','M85','M87'];
+  // ✅ If exact FIFA combo exists
+  if (ANNEX_C[key]) {
+    var mapping = ANNEX_C[key]; // array of 8 group letters
 
-  // ✅ assign strictly by ranking (1st best → last slot)
-  allThirds.forEach(function(team, i) {
-    assigned[slotOrder[i]] =
-      team.name + ' (3rd G' + team.gid + ')';
-  });
+    ANNEX_COLS.forEach(function(matchSlot, i) {
+      var groupLetter = mapping[i];
+
+      // find the corresponding third-place team
+      var team = thirds.find(t => t.gid === groupLetter);
+
+      assigned[matchSlot] = team
+        ? team.name + ' (3rd G' + team.gid + ')'
+        : '3rd G' + groupLetter;
+    });
+
+  } else {
+    // ✅ fallback (early tournament / missing combo)
+    ANNEX_COLS.forEach(function(slot, i) {
+      var team = thirds[i];
+      assigned[slot] = team
+        ? team.name + ' (3rd G' + team.gid + ')'
+        : '3rd TBD';
+    });
+  }
 
   return [
     {t1:t.A.ru, t2:t.B.ru, info:'M73'},
