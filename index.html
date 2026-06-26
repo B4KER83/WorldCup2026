@@ -750,66 +750,81 @@ var ANNEX_C={
 // Annex C column order: M74,M77,M79,M80,M81,M82,M85,M87
 var ANNEX_COLS = ['M74','M77','M79','M80','M81','M82','M85','M87'];
 
+
 function buildR32() {
   var t = {};
-  'ABCDEFGHIJKL'.split('').forEach(function(id) { t[id] = getTopTwo(id); });
+  'ABCDEFGHIJKL'.split('').forEach(id => t[id] = getTopTwo(id));
 
-  // Get best 8 third-place teams sorted by pts/gd/gf
   var allThirds = getAllThirdsSorted().slice(0, 8);
-  var qualifyingGroups = allThirds.map(function(x){ return x.gid; }).sort().join('');
-
-  // Look up Annex C for this exact combination
+  var qualifyingGroups = allThirds.map(x => x.gid).sort().join('');
   var annexRow = ANNEX_C[qualifyingGroups];
+
   var assigned = {};
+  var allowedGroups = allThirds.map(x => x.gid);
 
   if (annexRow) {
-    // Official FIFA mapping
-    ANNEX_COLS.forEach(function(match, i) {
-      var groupId = annexRow[i];
-      var team = allThirds.filter(function(x){ return x.gid === groupId; })[0];
-      assigned[match] = team ? team.name + ' (3rd G' + groupId + ')' : '3rd-G' + groupId;
+    ANNEX_COLS.forEach((match, i) => {
+      var gid = annexRow[i];
+      var team = allThirds.find(x => x.gid === gid);
+      assigned[match] = team ? team.name + ' (3rd G' + gid + ')' : '3rd-G' + gid;
     });
   } else {
-    // Fallback: greedy assignment for unknown combos (all 495 not embedded)
     var thirdSlots = [
-      {match:'M74',groups:'A/B/C/D/F'},{match:'M77',groups:'C/D/F/G/H'},
-      {match:'M79',groups:'C/E/F/H/I'},{match:'M80',groups:'E/H/I/J/K'},
-      {match:'M81',groups:'B/E/F/I/J'},{match:'M82',groups:'A/E/H/I/J'},
-      {match:'M85',groups:'E/F/G/I/J'},{match:'M87',groups:'D/E/I/J/L'}
+      {match:'M74',groups:'A/B/C/D/F'},
+      {match:'M77',groups:'C/D/F/G/H'},
+      {match:'M79',groups:'C/E/F/H/I'},
+      {match:'M80',groups:'E/H/I/J/K'},
+      {match:'M81',groups:'B/E/F/I/J'},
+      {match:'M82',groups:'A/E/H/I/J'},
+      {match:'M85',groups:'E/F/G/I/J'},
+      {match:'M87',groups:'D/E/I/J/L'}
     ];
+
     var used = {};
-    thirdSlots.forEach(function(slot) {
+
+    thirdSlots.forEach(slot => {
       var eligible = slot.groups.split('/');
+
       for (var i = 0; i < allThirds.length; i++) {
         var team = allThirds[i];
-        if (!used[team.name] && eligible.indexOf(team.gid) !== -1) {
+
+        if (
+          !used[team.name] &&
+          eligible.includes(team.gid) &&
+          allowedGroups.includes(team.gid) // ✅ KEY FIX
+        ) {
           assigned[slot.match] = team.name + ' (3rd G' + team.gid + ')';
-          used[team.name] = true; break;
+          used[team.name] = true;
+          break;
         }
       }
-      if (!assigned[slot.match]) assigned[slot.match] = '3rd(' + slot.groups + ')';
+
+      if (!assigned[slot.match]) {
+        assigned[slot.match] = '3rd(' + slot.groups + ')';
+      }
     });
   }
 
   return [
-    {t1:t.A.ru,           t2:t.B.ru,           info:'M73 Jun 28 · LA',         projected:true},
-    {t1:t.E.w,            t2:assigned['M74'],  info:'M74 Jun 29 · Boston',      projected:true},
-    {t1:t.F.w,            t2:t.C.ru,           info:'M75 Jun 29 · Monterrey',   projected:true},
-    {t1:t.C.w,            t2:t.F.ru,           info:'M76 Jun 29 · Guadalajara', projected:true},
-    {t1:t.I.w,            t2:assigned['M77'],  info:'M77 Jun 30 · New York',    projected:true},
-    {t1:t.E.ru,           t2:t.I.ru,           info:'M78 Jun 30 · Dallas',      projected:true},
-    {t1:t.A.w,            t2:assigned['M79'],  info:'M79 Jun 30 · Mexico City', projected:true},
-    {t1:t.L.w,            t2:assigned['M80'],  info:'M80 Jul 1 · Atlanta',      projected:true},
-    {t1:t.D.w,            t2:assigned['M81'],  info:'M81 Jul 1 · Kansas City',  projected:true},
-    {t1:t.G.w,            t2:assigned['M82'],  info:'M82 Jul 1 · Seattle',      projected:true},
-    {t1:t.K.ru,           t2:t.L.ru,           info:'M83 Jul 2 · Toronto',      projected:true},
-    {t1:t.H.w,            t2:t.J.ru,           info:'M84 Jul 2 · LA',           projected:true},
-    {t1:t.B.w,            t2:assigned['M85'],  info:'M85 Jul 2 · Vancouver',    projected:true},
-    {t1:t.J.w,            t2:t.H.ru,           info:'M86 Jul 2 · Miami',        projected:true},
-    {t1:t.K.w,            t2:assigned['M87'],  info:'M87 Jul 3 · Kansas City',  projected:true},
-    {t1:t.D.ru,           t2:t.G.ru,           info:'M88 Jul 3 · Dallas',       projected:true}
+    {t1:t.A.ru, t2:t.B.ru, info:'M73'},
+    {t1:t.E.w, t2:assigned['M74'], info:'M74'},
+    {t1:t.F.w, t2:t.C.ru, info:'M75'},
+    {t1:t.C.w, t2:t.F.ru, info:'M76'},
+    {t1:t.I.w, t2:assigned['M77'], info:'M77'},
+    {t1:t.E.ru, t2:t.I.ru, info:'M78'},
+    {t1:t.A.w, t2:assigned['M79'], info:'M79'},
+    {t1:t.L.w, t2:assigned['M80'], info:'M80'},
+    {t1:t.D.w, t2:assigned['M81'], info:'M81'},
+    {t1:t.G.w, t2:assigned['M82'], info:'M82'},
+    {t1:t.K.ru, t2:t.L.ru, info:'M83'},
+    {t1:t.H.w, t2:t.J.ru, info:'M84'},
+    {t1:t.B.w, t2:assigned['M85'], info:'M85'},
+    {t1:t.J.w, t2:t.H.ru, info:'M86'},
+    {t1:t.K.w, t2:assigned['M87'], info:'M87'},
+    {t1:t.D.ru, t2:t.G.ru, info:'M88'}
   ];
 }
+
 function grpHTML(g) {
   var st=calcStandings(g);
   var played=g.matches.filter(function(m){return m.s1!==null;}).length;
