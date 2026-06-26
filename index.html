@@ -915,7 +915,9 @@ function buildPage() {
   // Propagate winners (API data always wins — gaps only)
   propagateBracket();
 
-  var anyR32Proj=r32Display.some(function(m){return m.projected;});
+  var anyR32Proj = KO.r32.some(function(m){
+  return !m.t1 || !m.t2 || m.s1 === null || m.s2 === null;
+});
   document.getElementById('ko').innerHTML=
     koBlock('ROUND OF 32 &middot; 1&ndash;8'+(anyR32Proj?' &#x26A1;':''),r32Display.slice(0,8))
     +koBlock('ROUND OF 32 &middot; 9&ndash;16'+(anyR32Proj?' &#x26A1;':''),r32Display.slice(8))
