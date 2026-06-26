@@ -757,7 +757,11 @@ function buildR32() {
 
   var allThirdsFull = getAllThirdsForTable();
   var allThirds = allThirdsFull.slice(0, 8);
-  var qualifyingGroups = allThirds.map(x => x.gid).sort().join('');
+  
+var qualifyingGroups = [...new Set(allThirds.map(x => x.gid))]
+  .sort()
+  .join('');
+
   var annexRow = ANNEX_C[qualifyingGroups];
 
   var assigned = {};
