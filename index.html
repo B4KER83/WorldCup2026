@@ -818,8 +818,11 @@ function buildR32() {
       }
 
       if (!assigned[slot.match]) {
-        assigned[slot.match] = '3rd(' + slot.groups + ')';
-      }
+  var remaining = allThirds.find(x => !used[x.name]);
+  assigned[slot.match] = remaining
+    ? remaining.name + ' (3rd G' + remaining.gid + ')'
+    : '3rd(' + slot.groups + ')';
+}
     });
   }
 
