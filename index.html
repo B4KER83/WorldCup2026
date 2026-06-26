@@ -769,22 +769,21 @@ function buildR32() {
 
   if (annexRow) {
 
-    var used = {};
+    var assigned = {};
+var used = {};
 
-    ANNEX_COLS.forEach((match, i) => {
-      var gid = annexRow[i];
+// take top 8 third-place teams
+var thirds = allThirds.slice(0, 8);
 
-      var team = allThirds.find(x =>
-        x.gid === gid && !used[x.name]
-      );
+// fixed bracket slots
+var slotOrder = ['M74','M77','M79','M80','M81','M82','M85','M87'];
 
-      if (team) {
-        assigned[match] = team.name + ' (3rd G' + gid + ')';
-        used[team.name] = true;
-      } else {
-        assigned[match] = '3rd G' + gid;
-      }
-    });
+// assign by ranking
+thirds.forEach((team, i) => {
+  var match = slotOrder[i];
+  assigned[match] = team.name + ' (3rd G' + team.gid + ')';
+  used[team.name] = true;
+});
 
   } else {
     var thirdSlots = [
