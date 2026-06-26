@@ -767,8 +767,6 @@ function buildR32() {
   var assigned = {};
   var allowedGroups = allThirds.map(x => x.gid);
 
-  if (annexRow) {
-
     var assigned = {};
 var used = {};
 
@@ -785,7 +783,6 @@ thirds.forEach((team, i) => {
   used[team.name] = true;
 });
 
-  } else {
     var thirdSlots = [
       {match:'M74',groups:'A/B/C/D/F'},
       {match:'M77',groups:'C/D/F/G/H'},
