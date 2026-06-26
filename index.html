@@ -755,7 +755,8 @@ function buildR32() {
   var t = {};
   'ABCDEFGHIJKL'.split('').forEach(id => t[id] = getTopTwo(id));
 
-  var allThirds = getAllThirdsSorted().slice(0, 8);
+  var allThirdsFull = getAllThirdsForTable();
+  var allThirds = allThirdsFull.slice(0, 8);
   var qualifyingGroups = allThirds.map(x => x.gid).sort().join('');
   var annexRow = ANNEX_C[qualifyingGroups];
 
