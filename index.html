@@ -916,8 +916,16 @@ function buildPage() {
   // Merge projected R32 with real API data
   var r32Display=r32.map(function(proj,i){
     var real=KO.r32[i];
-    return{t1:real.t1||proj.t1,t2:real.t2||proj.t2,
-           s1:real.s1,s2:real.s2,info:real.info||proj.info,projected:!real.t1};
+    return{
+  t1: proj.t1,
+  t2: proj.t2,
+  s1: KO.r32[i].s1,
+  s2: KO.r32[i].s2,
+  info: KO.r32[i].info || proj.info,
+  projected: true
+};
+
+
   });
 
   // Sync back so propagation sees projected teams too
