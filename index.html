@@ -768,11 +768,24 @@ function buildR32() {
   var allowedGroups = allThirds.map(x => x.gid);
 
   if (annexRow) {
+
+    var used = {};
+
     ANNEX_COLS.forEach((match, i) => {
       var gid = annexRow[i];
-      var team = allThirds.find(x => x.gid === gid);
-      assigned[match] = team ? team.name + ' (3rd G' + gid + ')' : '3rd-G' + gid;
+
+      var team = allThirds.find(x =>
+        x.gid === gid && !used[x.name]
+      );
+
+      if (team) {
+        assigned[match] = team.name + ' (3rd G' + gid + ')';
+        used[team.name] = true;
+      } else {
+        assigned[match] = '3rd G' + gid;
+      }
     });
+
   } else {
     var thirdSlots = [
       {match:'M74',groups:'A/B/C/D/F'},
