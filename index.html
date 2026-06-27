@@ -599,7 +599,8 @@ if (played) {
 else if (locked) {
   proj = '<div class="proj-tag" style="background:#22c55e22;color:#22c55e">✅ LOCKED</div>';
 }
-else if (m.projected) {
+else {
+  // fallback = still changeable → projected
   proj = '<div class="proj-tag">&#x26A1; PROJECTED</div>';
 }
   var ph=m.placeholder?'<div class="proj-tag" style="color:#6e7681">&#x2192; TBD</div>':'';
