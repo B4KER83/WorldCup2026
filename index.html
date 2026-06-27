@@ -589,7 +589,7 @@ function mcHTML(m){
 var groupsDone = areGroupsComplete();
 
 var played = m.s1 !== null && m.s2 !== null;
-var locked = groupsDone && t1 && t2 && !played;
+var locked = t1 && t2 && !played && !m.projected;
 
 var proj = '';
 
