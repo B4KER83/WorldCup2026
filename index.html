@@ -654,7 +654,7 @@ function processKOMatch(m,home,away,s1,s2){
 
 function fetchLiveScores(){
   setAutoBtn('loading');
-  fetch(WORKER_URL)
+  fetch(_URL)
     .then(function(res){if(!res.ok)throw new Error('HTTP '+res.status);return res.json();})
     .then(function(data){
       if(!data.matches||!data.matches.length)throw new Error('No matches');
