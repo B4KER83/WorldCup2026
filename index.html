@@ -609,7 +609,12 @@ function buildPage(){
     var isProj=real.t1?false:proj.projected;
     return{t1:real.t1||proj.t1,t2:real.t2||proj.t2,s1:real.s1,s2:real.s2,info:real.info||proj.info,projected:isProj};
   });
-  r32Display.forEach(function(m,i){KO.r32[i].t1=m.t1;KO.r32[i].t2=m.t2;KO.r32[i].s1=m.s1;KO.r32[i].s2=m.s2;});
+r32Display.forEach(function(m,i){
+  KO.r32[i].t1=m.t1;
+  KO.r32[i].t2=m.t2;
+  KO.r32[i].s1=m.s1;
+  KO.r32[i].s2=m.s2;
+});
   propagateBracket();
   var anyProj=r32Display.some(function(m){return m.projected;});
   var allGDone=GROUPS.filter(function(g){return g.matches.filter(function(m){return m.s1!==null;}).length===6;}).length===12;
